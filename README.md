@@ -39,6 +39,16 @@ $ npm run start:prod
 })
 ```
 
+### nest cli
+
+nest cli를 사용해서 프로젝트에 필요한 기본 바탕을 생성할 수 있다.
+
+```shell
+nest generate controller
+```
+
+폴더가 생성되고 controller.ts와 spec 파일이 생성된다.
+
 ### controller
 
 기본적인 url을 가져오고 함수를 실행하는 부분
@@ -112,27 +122,55 @@ nestjs에서 개발자가 원하는 값이 있다면 요청을 해야한다.
 
 ### services
 
+nest cli로 services.ts를 만들 수 있다.
+
+```shell
+nest g s
+```
+
+이름은 movies로 만든다. movies폴더 안에 services.ts가 생성된것을 확인할 수 있다.
+
 컨트롤러는 url을 가져오는 역할
 비지니스 로직은 services에서 실행.
 
 ```typescript
+import { Injectable } from '@nestjs/common';
+import { Movie } from './entities/movie.entity';
+
 @Injectable()
-export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+export class MoviesService {
+  private movies: Movie[] = [];
+
+  getAll(): Movie[] {
+    return this.movies;
   }
-  getHi(): string {
-    return 'hi';
+
+  getOne(id: string): Movie {
+    const movie = this.movies.find((movie) => movie.id === +id);
+    if (!movie) {
+      throw new NotFoundException(`Movie with ID ${id} not found.`);
+    }
+    return movie;
+  }
+
+  deleteOne(id: string): boolean {
+    this.movies.filter((movie) => movie.id !== +id);
+    return true;
+  }
+
+  createMovie(movieData) {
+    this.movies.push({
+      id: this.movies.length + 1,
+      ...movieData,
+    });
   }
 }
 ```
 
-### nest cli
+이름은 controller의 함수와 같아도 상관 없다.
+entities 폴더를 만들고 가짜 DB를 만든다.
+nestjs는 import를 하드코딩 하지 않는다. 내가 요청하는 값을 입력하면 자동으로 import된다.
 
-nest cli를 사용해서 프로젝트에 필요한 기본 바탕을 생성할 수 있다.
-
-```shell
-nest generate controller
-```
-
-폴더가 생성되고 controller.ts와 spec 파일이 생성된다.
+error handling
+nestjs에서 제공하는 throw new NotFoundException()를 사용할 수 있다.
+괄호 안에 error 메시지를 띄울 수 있다.
