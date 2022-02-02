@@ -87,15 +87,21 @@ http:localhost:3000/say-hello가 된다.
 nestjs에서 @Get, @Post, @Delete, @Put, @Patch 데코레이터를 제공한다. HTTP method와 같다. express의 router와 비슷한 역할을 한다.
 데코레이터는 함수 사이에 빈칸을 두면 안된다.
 
-### @Param()
+### @Body(), @Param(), @Query
 
-nestjs에서 개발자가 원하는 값이 있다면 요청을 해야한다. @Param은 parameter값을 요청하는 데코레이터다.
+nestjs에서 개발자가 원하는 값이 있다면 요청을 해야한다.
+@Param은 parameter값을 요청하는 데코레이터다.
+@Body는 body 값을 요청하는 데코레이터다.
 
 ```typescript
 @Controller(){
   @Get('/:id')
     getOne(@Param('id') id: string) {
       return `this will return :id ${id}`;
+    }
+   @Post()
+    create(@Body() movieData) {
+      return movieData
     }
 }
 ```
