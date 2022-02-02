@@ -43,7 +43,7 @@ $ npm run start:prod
 
 app.module.ts에서 controllers는 AppController가 되어야한다.
 
-movie.module.ts에서 controllers는 MovieController가 되어야한다.
+movie.module.ts에서 controllers는 MovieCont
 
 ### nest cli
 
@@ -262,3 +262,46 @@ export class UpdateMovieDto extends PartialType(CreateMovieDto) {}
 ```
 
 CreateMovieDto class를 확장해서 사용하되 PartialType이 각 필드 입력값을 필수가 아닌 선택으로 전환해준다.
+
+## Dependency Injection
+
+```ts
+@Module({
+  controllers: [MoviesController],
+  providers: [MoviesService],
+})
+```
+
+providers나 controllers가 type을 import 해서 injection하는 것을 의미한다.
+movies.service.ts를 살펴보면 class 상단에 @Injectalbe 데코레이터가 붙어있다.
+
+만약 provieders를 지우면 앱이 실행되지 않는다.
+
+```ts
+@Injectable()
+```
+
+## express on nestJS
+
+nestjs는 expressjs와 Fastifyjs 위에서 돌아간다. 그래서 expressjs의 객체를 불러올 수 있다.
+좋은 방법은 아니라고 한다.
+
+```ts
+@Controller('movie')
+export class MovieController {
+  constructor(private readonly moviesService: MovieService) {}
+
+  @Get()
+  getAll(@Req() req, @Res res): Movie[] {
+    return this.movieService.getAll();
+  }
+}
+```
+
+## Wrap Up
+
+MVC 패턴을 공부하다가 expressJS에는 MVC 프레임 워크가 없을까? 하고 찾아봤는데 expressJS 공식 홈페이지에 눈에 익은 NestJS를 보게 되었다. 그래서 한번 사용해보자는 의미로 간단하게 기능들을 살펴보았다.
+
+- NestJS는 typescript로 작성된다.
+- moules 안에 controllers와 providers가 Dependency injection되어 app이 실행된다.
+- cli를 통해 간단하게 controller와 services를 만들 수 있다. 덕분에 처음부터 끝까지 모두 다 만들어줘야하는 express보다 빠르게 앱을 만들 수 있다.
