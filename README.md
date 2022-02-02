@@ -31,6 +31,8 @@ $ npm run start:prod
 
 한가지 역할을 하는 어플리케이션
 
+- app.module.ts
+
 ```typescript
 @Module({
   imports: [],
@@ -38,6 +40,10 @@ $ npm run start:prod
   providers: [AppService],
 })
 ```
+
+app.module.ts에서 controllers는 AppController가 되어야한다.
+
+movie.module.ts에서 controllers는 MovieController가 되어야한다.
 
 ### nest cli
 
@@ -174,3 +180,85 @@ nestjs는 import를 하드코딩 하지 않는다. 내가 요청하는 값을 �
 error handling
 nestjs에서 제공하는 throw new NotFoundException()를 사용할 수 있다.
 괄호 안에 error 메시지를 띄울 수 있다.
+
+### DTO(Data Transfer Object)
+
+서비스, 컨트롤러에서 전송되는 데이터에 타입을 부여하기 위해서 DTO를 만든다.
+
+장점
+코드를 간결하게 만들어준다.
+NestJS에서 들어오는 쿼리에 대해 유효성 검사를 할 수 있게 해준다.
+
+pipe?
+미들웨어와 같은 역할을 한다.
+
+useGlobalPipes(new ValidationPipe())를 추가한다.
+
+whitelist, forbidNonWhitelisted를 추가할 수 있다.
+
+어떤 사용자가 이상한 데이터를 보내려고 하면 data가 들어오지 못하게 막아준다.
+
+transform은 사용자가 실재로 사용할 타입으로 전환해준다.
+
+```ts
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  ); // 추가
+  await app.listen(3000);
+}
+bootstrap();
+```
+
+```shell
+npm install class-validation class-transformer
+```
+
+두 npm package를 설치한다.
+
+create-movies.dto.ts를 수정한다.
+
+```ts
+import { IsString, IsNumber } from 'class-validator';
+
+export class CreateMovieDto {
+  @IsString()
+  readonly title: string;
+
+  @IsNumber()
+  readonly year: number;
+
+  @IsString({ each: true })
+  readonly genres: string[];
+}
+```
+
+```json
+{
+  "Hacked": "hahaha"
+}
+```
+
+Insomnia로 위의 json으로 테스트를 하면 validation을 하는 것을 알 수 있다.
+
+patch의 validation을 위해 update-movie.dto.ts를 만든다.
+update되는 데이터는 모든 필드의 입력이 필수사항이 아니다.
+각 필드를 선택사항으로 바꿀 수 있는데 nestjs/maaped-types의 도움을 받을 수 있다.
+
+```shell
+npm install @nestjs/mapped-types
+```
+
+```ts
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateMovieDto } from './create-movie.dto';
+
+export class UpdateMovieDto extends PartialType(CreateMovieDto) {}
+```
+
+CreateMovieDto class를 확장해서 사용하되 PartialType이 각 필드 입력값을 필수가 아닌 선택으로 전환해준다.
