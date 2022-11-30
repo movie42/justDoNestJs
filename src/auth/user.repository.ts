@@ -33,7 +33,7 @@ export class UserRepository extends Repository<User> {
     const { username, password } = authCredentialDto;
     const user = await this.findOne({ where: { username } });
     if (user && (await bcrypt.compare(password, user.password))) {
-      return "Login Success";
+      return user.username;
     }
     throw new UnauthorizedException("Login Failed");
   }
