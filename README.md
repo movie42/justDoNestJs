@@ -14,12 +14,7 @@ $ nest new project-name
 
 ```bash
 # development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
+	@@ -45,29 +23,242 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 

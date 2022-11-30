@@ -3,6 +3,7 @@ import { CreateBoardDto } from "./dto/createBoard.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { BoardRepository } from "./board.repository";
 import { BoardStatusValue } from "./boardStatus.type";
+import { User } from "src/auth/user.entity";
 
 @Injectable()
 export class BoardsService {
@@ -17,8 +18,8 @@ export class BoardsService {
   async getBoardById(id: number) {
     return await this.boardRepository.getBoardById(id);
   }
-  async createBoard(createBoardDto: CreateBoardDto) {
-    return await this.boardRepository.createBoard(createBoardDto);
+  async createBoard(createBoardDto: CreateBoardDto, user: User) {
+    return await this.boardRepository.createBoard(createBoardDto, user);
   }
   async updateBoardStatus(id: number, status: BoardStatusValue) {
     return await this.boardRepository.updateBoardStatus(id, status);
