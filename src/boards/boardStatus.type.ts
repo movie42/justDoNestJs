@@ -1,4 +1,4 @@
-const BoardStatus = {
+export const BoardStatus = {
   PUBLIC: "PUBLIC",
   PRIVATE: "PRIVATE"
 } as const;
@@ -6,10 +6,3 @@ const BoardStatus = {
 export type BoardStatusType = typeof BoardStatus;
 export type BoardStatusKey = keyof BoardStatusType;
 export type BoardStatusValue = BoardStatusType[BoardStatusKey];
-
-export interface Board {
-  id: string;
-  title: string;
-  description: string;
-  status: BoardStatusValue;
-}

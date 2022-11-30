@@ -1,40 +1,29 @@
 import { Injectable } from "@nestjs/common";
-import { Board, BoardStatusValue } from "./board.model";
-import { v1 as uuid } from "uuid";
 import { CreateBoardDto } from "./dto/createBoard.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { BoardRepository } from "./board.repository";
+import { BoardStatusValue } from "./boardStatus.type";
 
 @Injectable()
 export class BoardsService {
-  private boards: Board[] = [];
-
-  getAllBoards() {
-    return this.boards;
+  constructor(
+    @InjectRepository(BoardRepository)
+    private boardRepository: BoardRepository
+  ) {}
+  async getAllBoards() {
+    return await this.boardRepository.getAllBoards();
   }
 
-  getBoardById(id: string) {
-    return this.boards.find((board) => board.id === id);
+  async getBoardById(id: number) {
+    return await this.boardRepository.getBoardById(id);
   }
-
-  createBoard(createBoardDto: CreateBoardDto) {
-    const { title, description } = createBoardDto;
-    const board: Board = {
-      id: uuid(),
-      title,
-      description,
-      status: "PUBLIC"
-    };
-
-    this.boards.push(board);
-    return board;
+  async createBoard(createBoardDto: CreateBoardDto) {
+    return await this.boardRepository.createBoard(createBoardDto);
   }
-
-  updateBoardStatus(id: string, status: BoardStatusValue) {
-    const board = this.getBoardById(id);
-    board.status = status;
-    return board;
+  async updateBoardStatus(id: number, status: BoardStatusValue) {
+    return await this.boardRepository.updateBoardStatus(id, status);
   }
-
-  deleteBoard(id: string) {
-    this.boards = this.boards.filter((board) => board.id !== id);
+  async deleteBoard(id: number) {
+    return await this.boardRepository.deleteBoard(id);
   }
 }
