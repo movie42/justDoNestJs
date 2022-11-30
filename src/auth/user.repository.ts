@@ -30,11 +30,17 @@ export class UserRepository extends Repository<User> {
   }
 
   async findUser(authCredentialDto: AuthCredentialDto) {
-    const { username, password } = authCredentialDto;
-    const user = await this.findOne({ where: { username } });
-    if (user && (await bcrypt.compare(password, user.password))) {
-      return user.username;
+    try {
+      const { username, password } = authCredentialDto;
+      console.log(username, password);
+      const user = await this.findOne({ where: { username } });
+      console.log(user);
+      if (user && (await bcrypt.compare(password, user.password))) {
+        return user.username;
+      }
+      throw new UnauthorizedException("Login Failed");
+    } catch (error) {
+      console.log(error);
     }
-    throw new UnauthorizedException("Login Failed");
   }
 }

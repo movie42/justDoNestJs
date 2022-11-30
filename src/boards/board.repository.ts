@@ -1,4 +1,5 @@
 import { NotFoundException } from "@nestjs/common";
+import { User } from "src/auth/user.entity";
 import { CustomRepository } from "src/db/typeorm-ex.decorator";
 import { Repository } from "typeorm";
 import { Board } from "./board.entity";
@@ -19,13 +20,15 @@ export class BoardRepository extends Repository<Board> {
     return found;
   }
 
-  async createBoard(createBoardDto: CreateBoardDto) {
+  async createBoard(createBoardDto: CreateBoardDto, user: User) {
     const { title, description } = createBoardDto;
     const board = this.create({
       title,
       description,
-      status: "PUBLIC"
+      status: "PUBLIC",
+      user
     });
+
     await this.save(board);
     return board;
   }
