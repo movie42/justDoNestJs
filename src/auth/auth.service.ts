@@ -11,4 +11,8 @@ export class AuthService {
   async signUp(authCredential: AuthCredentialDto) {
     return this.userRepository.createUser(authCredential);
   }
+
+  async signIn(authCredentialDto: AuthCredentialDto) {
+    return this.userRepository.findUser(authCredentialDto);
+  }
 }
