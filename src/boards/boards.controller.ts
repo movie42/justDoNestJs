@@ -14,9 +14,8 @@ import {
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "src/auth/getUser.decorator";
 import { User } from "src/auth/user.entity";
-
-import { BoardsService } from "./boards.service";
 import { BoardStatusValue } from "./boardStatus.type";
+import { BoardsService } from "./boards.service";
 import { CreateBoardDto } from "./dto/createBoard.dto";
 import { BoardStatusValidationPipe } from "./pipes/boardStatusValidation.pipe";
 
