@@ -12,7 +12,7 @@ $ nest new project-name
 
 ## 실행
 
-```bash
+```**bash**
 # development
 	@@ -45,29 +23,242 @@ $ npm run start:dev
 $ npm run start:prod
