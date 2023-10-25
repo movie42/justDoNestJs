@@ -25,8 +25,8 @@ export class BoardsController {
   constructor(private boardsService: BoardsService) {}
 
   @Get("/")
-  getAllBoard() {
-    return this.boardsService.getAllBoards();
+  getAllBoard(@GetUser() user: User) {
+    return this.boardsService.getAllBoards(user);
   }
 
   @Get("/:id")
@@ -49,7 +49,7 @@ export class BoardsController {
   }
 
   @Delete("/:id")
-  deleteBoard(@Param("id", ParseIntPipe) id: number) {
-    return this.boardsService.deleteBoard(id);
+  deleteBoard(@Param("id", ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.boardsService.deleteBoard(id, user);
   }
 }
