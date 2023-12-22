@@ -8,10 +8,6 @@ import { CreateBoardDto } from "./dto/createBoard.dto";
 
 @CustomRepository(Board)
 export class BoardRepository extends Repository<Board> {
-  async getAllBoards() {
-    return await this.find();
-  }
-
   async getBoardById(id: number) {
     const found = await this.findOne({ where: { id } });
     if (!found) {
@@ -40,8 +36,8 @@ export class BoardRepository extends Repository<Board> {
     return board;
   }
 
-  async deleteBoard(id: number) {
-    const result = await this.delete(id);
+  async deleteBoard(id: number, user: User) {
+    const result = await this.delete({ id, user: { id: user.id } });
     if (result.affected === 0) {
       throw new NotFoundException(`Can not found board with id ${id}`);
     }

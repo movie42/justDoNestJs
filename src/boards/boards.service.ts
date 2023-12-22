@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import { CreateBoardDto } from "./dto/createBoard.dto";
 import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "src/auth/user.entity";
 import { BoardRepository } from "./board.repository";
 import { BoardStatusValue } from "./boardStatus.type";
-import { User } from "src/auth/user.entity";
+import { CreateBoardDto } from "./dto/createBoard.dto";
 
 @Injectable()
 export class BoardsService {
@@ -11,8 +11,11 @@ export class BoardsService {
     @InjectRepository(BoardRepository)
     private boardRepository: BoardRepository
   ) {}
-  async getAllBoards() {
-    return await this.boardRepository.getAllBoards();
+  async getAllBoards(user: User) {
+    const query = this.boardRepository.createQueryBuilder("board");
+    query.where("board.userId = :userId", { userId: user.id });
+    const board = await query.getMany();
+    return board;
   }
 
   async getBoardById(id: number) {
@@ -24,7 +27,7 @@ export class BoardsService {
   async updateBoardStatus(id: number, status: BoardStatusValue) {
     return await this.boardRepository.updateBoardStatus(id, status);
   }
-  async deleteBoard(id: number) {
-    return await this.boardRepository.deleteBoard(id);
+  async deleteBoard(id: number, user: User) {
+    return await this.boardRepository.deleteBoard(id, user);
   }
 }
